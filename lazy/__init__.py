@@ -1,3 +1,5 @@
+from itertools import count
+
 
 class lazy(object):
     _offset = 0
@@ -63,6 +65,15 @@ class lazy(object):
         seq._L = self._L
         return seq
 
+    def __iter__(self):
+        """
+        Iterate over elements, realizing sequence as we go.
+        """
+        try:
+            for index in count():
+                yield self[index]
+        except IndexError:
+            pass
 
     """
 __getslice__

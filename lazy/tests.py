@@ -36,3 +36,8 @@ class TestLazy(unittest.TestCase):
             for _ in xrange(11):
                 i = i.rest()
             i.first()
+
+    def test_rewindable_iterable(self):
+        L = lazy(xrange(10))
+        self.assertEqual(list(L), list(range(10)))
+        self.assertEqual(list(L), list(range(10)))
