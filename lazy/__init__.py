@@ -11,6 +11,7 @@ class lazy(object):
         self.realized = False
 
     def __getitem__(self, index):
+        # XXX index may be a slice object
         L = self._L
         i = self._i
 
@@ -74,10 +75,3 @@ class lazy(object):
                 yield self[index]
         except IndexError:
             pass
-
-    """
-__getslice__
-__iter__
-__repr__
-__reversed__
-"""
