@@ -14,7 +14,7 @@ class TestLazy(unittest.TestCase):
         self.assertEqual(L[5], 7)
         self.assertFalse(L.realized)
         self.assertEqual(L[7], 9)
-        self.assertTrue(L.realized)
+        self.assertFalse(L.realized)
         with self.assertRaises(IndexError):
             L[8]
         self.assertEqual(L[0], 2)

@@ -31,9 +31,7 @@ class lazy(object):
         index += self._offset
         if not self.realized:
             try:
-                # Look ahead one to find end so that "realized" will be true
-                # as soon as last item has been retrieved
-                while len(L) < index + 2:  # Look ahead one to find end
+                while len(L) < index + 1:
                     L.append(next(i))
             except StopIteration:
                 self.realized = True
