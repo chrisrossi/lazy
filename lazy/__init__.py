@@ -10,8 +10,8 @@ class lazy(object):
         self._i = iter(it)
         self.realized = False
 
-    def __getitem__(self, index):
-        # XXX index may be a slice object
+    def _realize(self, index):
+        # XXX index may be a slice object or negative
         L = self._L
         i = self._i
 
@@ -27,21 +27,28 @@ class lazy(object):
             except StopIteration:
                 # Skipped past end of sequence.  This sequence will be empty.
                 self.realized = True
+                raise
             self._offset = offset
 
         # Attempt to realize enough of the sequence to be able to find the
         # indexed element
         index += self._offset
+        try:
+            while len(L) < index + 1:
+                L.append(next(i))
+        except StopIteration:
+            self.realized = True
+            raise
+
+        return L[index]
+
+    def __getitem__(self, index):
         if not self.realized:
             try:
-                while len(L) < index + 1:
-                    L.append(next(i))
+                return self._realize(index)
             except StopIteration:
-                self.realized = True
-
-        # Will raise IndexError if underlying iterable stopped before making it
-        # to index
-        return L[index]
+                raise IndexError(index)
+        return self._L[index]
 
     def __repr__(self):
         return u'lazy(%r)' % self._it
@@ -70,8 +77,6 @@ class lazy(object):
         """
         Iterate over elements, realizing sequence as we go.
         """
-        try:
-            for index in count():
-                yield self[index]
-        except IndexError:
-            pass
+        if self.realized:
+            return iter(self._L)
+        return (self._realize(i) for i in count())
